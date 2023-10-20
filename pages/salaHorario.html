@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="node_modules/@glidejs/glide/dist/css/glide.core.min.css">
+    <link rel="stylesheet" href="../css/styled.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <title>Cinema - horario</title>
+</head>
+<body>
+  <style>
+    body{
+      background-color: #434343;
+    }
+
+    .btn-backSH{
+    width: auto;
+    font-size: 1.125rem;
+    font-weight: 500;
+    min-height: 3rem;
+    padding: 0.5rem 1rem;
+    background: rgb(229,9,20);
+    margin-top: 1%;
+    }
+
+    .btn-backSH a{
+    color: rgb(255,255,255);
+    text-decoration: none;
+}
+
+  </style>
+  <p id="titulo-filme" class="tituloFilmeSala"></p>
+  
+
+<div class="room-container">
+
+
+  <div class="films-container">
+    <img class="img-cartaz" src="" alt="imagem-cartaz">
+  </div>
+
+  <div class="horario">
+    <h2 class="texto-horario">Selecione o Horário</h2>
+    <div class="room">
+      <h3>Sala <span>1</span></h3>
+      <button onclick="armazenarValor('13:30', 'Sala 1')">13:30</button>
+      <button onclick="armazenarValor('15:40', 'Sala 1')">15:40</button>
+      <button onclick="armazenarValor('17:30', 'Sala 1')">17:30</button>
+    </div>
+    
+    <div  class="room">
+      <h3>Sala <span>2</span></h3>
+      <button onclick="armazenarValor('13:30', 'Sala 2')">13:30</button>
+      <button onclick="armazenarValor('15:40', 'Sala 2')">15:40</button>
+      <button onclick="armazenarValor('17:30', 'Sala 2')">17:30</button>
+    </div>
+    
+    <div  class="room">
+      <h3>Sala <span>3</span></h3>
+      <button onclick="armazenarValor('13:30', 'Sala 3')">13:30</button>
+      <button onclick="armazenarValor('15:40', 'Sala 3')">15:40</button>
+      <button onclick="armazenarValor('17:30', 'Sala 3')">17:30</button>
+    </div>
+    
+    <div  class="room">
+      <h3>Sala <span>4</span></h3>
+      <button onclick="armazenarValor('13:30', 'Sala 4')">13:30</button>
+      <button onclick="armazenarValor('15:40', 'Sala 4')">15:40</button>
+      <button onclick="armazenarValor('17:30', 'Sala 4')">17:30</button>
+    </div>
+    
+  </div>
+  
+</div>
+<div class="btn-container">
+  <button class="btn-backSH"><a href="./escolherFilme.html">Voltar</a></button>
+</div>
+
+  <script>
+    // Recuperar o título do filme do localStorage
+    const tituloFilme = localStorage.getItem('tituloFilme');
+    // Escrever o título do filme na página
+    document.getElementById('titulo-filme').innerHTML = tituloFilme;
+
+
+    axios.get('https://api.b7web.com.br/cinema/')
+    .then(response => {
+      const catalogo = response.data;
+      const tituloProcurado = tituloFilme;
+
+      const filmeEncontrado = catalogo.find(item => item.titulo === tituloProcurado);
+      document.querySelector('.img-cartaz').src = filmeEncontrado.avatar
+      
+    })
+
+    .catch(error => {
+      console.error("Ocorreu um erro na solicitação:", error);
+    });
+
+
+    function armazenarValor(horario, sala) {
+      console.log("Horário selecionado:", horario);
+      console.log("Sala selecionada:", sala);
+
+      // Armazenar os valores no localStorage
+      localStorage.setItem('horarioSelecionado', horario);
+      localStorage.setItem('salaSelecionada', sala);  
+      window.location.href = '/pages/escolherCadeira.html'
+    }
+  
+  </script>
+
+  <script src="../js/script.js"></script>
+</body>
+</html>

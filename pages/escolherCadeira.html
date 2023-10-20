@@ -1,0 +1,215 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="node_modules/@glidejs/glide/dist/css/glide.core.min.css">
+    <link rel="stylesheet" href="../css/styled.css">
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+    
+    <title>Document</title>
+</head>
+<body>
+  
+  <style>
+     
+     body{
+      background-color: #434343;
+     }
+
+    h1 {
+      text-align: center;
+    }
+
+    #assentos {
+      display: flex;
+      flex-wrap: wrap;
+      justify-content: center;
+      margin-top: 20px;
+    }
+
+    .assento {
+      font-size: 20px;
+      width: 45px;
+      height: 45px;
+      margin: 5px;
+      text-align: center;
+      border-radius: 50%;
+      background-color: #ccc;
+      cursor: pointer;
+    }
+
+    .assento.selecionado {
+      background-color: brown;
+    }
+
+    #cadeirasSelecionadas {
+      margin-top: 20px;
+      text-align: center;
+    }
+
+    #confirmar {
+      margin-top: 10px;
+      text-align: center;
+    }
+
+    #total {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 24px;
+      font-weight: bold;
+    }
+
+    #alterar {
+      margin-top: 10px;
+      text-align: center;
+    
+    }
+
+    .pay-btnClass{
+     width: 10%;
+      margin-left: 1%;
+    
+    }
+    .pay-btn{
+      width: 100%;
+      font-size: 1.125rem;
+      font-weight: 500;
+      min-height: 3rem;
+      padding: 0.5rem 1rem;
+      background: rgb(229,9,20);
+      margin-top: 6.5%;
+    }
+
+    .pay-btn a, .btn-back a{
+      color: rgb(255,255,255);
+    text-decoration: none;
+    }
+
+    .btn-back{
+      width: 10%;
+      font-size: 1.125rem;
+      font-weight: 500;
+      min-height: 3rem;
+      padding: 0.5rem 1rem;
+      background: rgb(229,9,20);
+      margin-top: 1%;
+      margin-left: 1%;
+    }
+
+    .btn-confirm{
+      width: 10%;
+      font-size: 1.125rem;
+      font-weight: 500;
+      min-height: 3rem;
+      padding: 0.5rem 1rem;
+      background: rgb(229,9,20);
+      margin-top: 1%;
+      margin-left: 1%;
+      color: rgb(255,255,255);
+    }
+    .btn-change{
+      font-size: 1.125rem;
+      font-weight: 500;
+      min-height: 3rem;
+      padding: 0.5rem 1rem;
+      background: rgb(229,9,20);
+      margin-top: 1%;
+      margin-left: 1%;
+      color: rgb(255,255,255);
+    }
+
+    .container-btns {
+      display: flex;
+      justify-content: center;
+      height: 10vh
+    }
+  </style>
+
+
+  <div>
+    <button class="btn-back"><a href="./escolherFilme.html">Voltar</a></button>
+  </div>
+  
+
+
+  <div class="films-container pagina-cadeira">
+    <img class="img-cartaz" src="" alt="imagem-cartaz">
+    <div class="horario-sala">
+      <p id="titulo-filme"></p>
+      <div class="info-sala">
+        <h1 id="nSala"></h1>
+        <h2 id="horario"></h2>
+      </div>
+    </div>
+  </div>
+
+  <div class="horario-sala">
+    <h1 id="nSala"></h1>
+    <h2 id="horario"></h2>
+  </div>
+
+  <main>
+      <h1 class="titulo-assentos">Escolha seus assentos</h1>
+    <div id="assentos"></div>
+    <div id="cadeirasSelecionadas">
+      <h2 class="titulo-assentos">Cadeiras Selecionadas</h2>
+      <ul id="listaCadeiras"></ul>
+    </div>
+    <div id="confirmar">
+      <button onclick="confirmarSelecao()" class="btn-confirm">Confirmar</button>
+    </div>
+    
+    <div id="total" style="display: none;"></div>
+    <div class="container-btns">
+      <div id="alterar" style="display: none;">
+        <button onclick="permitirAlterar()" class="btn-change">Alterar</button>
+      </div>
+      <div id="btn-pagamento" class="pay-btnClass" style="display: none;">
+        <Button class="pay-btn"><a href="./pagamento.html">Ir para pagamento</a></Button>
+      </div>
+    </div>
+   
+    
+  </main>
+  
+
+  <script src="script.js"></script>
+
+  <script>
+    // Recuperar o título do filme do localStorage
+    const tituloFilme = localStorage.getItem('tituloFilme');
+    // Escrever o título do filme na página
+    document.getElementById('titulo-filme').innerHTML = tituloFilme;
+
+
+    axios.get('https://api.b7web.com.br/cinema/')
+    .then(response => {
+      const catalogo = response.data;
+      const tituloProcurado = tituloFilme;
+
+      const filmeEncontrado = catalogo.find(item => item.titulo === tituloProcurado);
+      document.querySelector('.img-cartaz').src = filmeEncontrado.avatar
+      
+    })
+
+    .catch(error => {
+      console.error("Ocorreu um erro na solicitação:", error);
+    });
+
+    // Recuperar os valores do localStorage
+    let horario = localStorage.getItem('horarioSelecionado');
+    let sala = localStorage.getItem('salaSelecionada');
+
+    console.log("Horário armazenado:", horario);
+    console.log("Sala armazenada:", sala);
+
+    document.getElementById('nSala').innerHTML = sala;
+    document.getElementById('horario').innerHTML = horario;
+
+  </script>
+
+  <script src="../js/script.js"></script>
+</body>
+</html>

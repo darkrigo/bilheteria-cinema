@@ -1,0 +1,214 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Página de Pagamento</title>
+  <style>
+    /* Estilos CSS */
+
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f5f5f5;
+    }
+
+    h1 {
+      color: #333;
+    }
+
+    .payment-option {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 20px;
+    }
+
+    .payment-option label {
+      margin-right: 10px;
+    }
+
+    .payment-form {
+      max-width: 400px;
+      margin: 0 auto;
+      background-color: #fff;
+      padding: 20px;
+      border-radius: 8px;
+      box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      display: none;
+    }
+
+    .payment-form.show {
+      display: block;
+    }
+
+    .payment-form label {
+      display: block;
+      margin-bottom: 10px;
+      color: #333;
+    }
+
+    .payment-form input[type="text"] {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-bottom: 2px solid #ddd;
+      font-size: 16px;
+      transition: border-bottom-color 0.3s ease-in-out;
+    }
+
+    .payment-form input[type="text"]:focus {
+      border-bottom-color: #4CAF50;
+    }
+
+    .payment-form button {
+      background-color: #4CAF50;
+      color: #fff;
+      border: none;
+      padding: 10px 20px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s ease-in-out;
+    }
+
+    .payment-form button:hover {
+      background-color: #45a049;
+    }
+
+    .qr-code {
+      text-align: center;
+      margin-top: 20px;
+    }
+
+    .message {
+      text-align: center;
+      margin-top: 20px;
+      font-size: 18px;
+      display: none;
+    }
+
+    .loading-bar {
+      width: 100%;
+      height: 20px;
+      background-color: #ddd;
+      border-radius: 10px;
+      overflow: hidden;
+      display: none;
+    }
+
+    .loading-bar .progress {
+      width: 0%;
+      height: 100%;
+      background-color: #4CAF50;
+      transition: width 0.5s;
+    }
+
+    #btn-pagamento{
+      display: flex;
+    justify-content: center;
+    align-items: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>Pagamento</h1>
+
+  <div class="payment-option">
+    <label>
+      <input type="radio" name="payment-option" value="credit-debit" checked> Cartão de Crédito/Débito
+    </label>
+    <label>
+      <input type="radio" name="payment-option" value="pix"> PIX
+    </label>
+  </div>
+
+  <div class="payment-form show">
+    <form id="payment-form" action="/processar-pagamento" method="POST">
+      <label for="card-number">Número do Cartão:</label>
+      <input type="text" id="card-number" name="card-number" placeholder="Número do cartão" required>
+
+      <label for="card-name">Nome no Cartão:</label>
+      <input type="text" id="card-name" name="card-name" placeholder="Nome no cartão" required>
+
+      <label for="expiration-date">Data de Expiração:</label>
+      <input type="text" id="expiration-date" name="expiration-date" placeholder="MM/AA" required>
+
+      <label for="cvv">CVV:</label>
+      <input type="text" id="cvv" name="cvv" placeholder="CVV" required>
+
+      <button type="submit">Pagar</button>
+    </form>
+  </div>
+
+  <div class="qr-code">
+    <img src="https://via.placeholder.com/150" alt="QR Code" id="qr-code-img" style="display: none;">
+  </div>
+
+  <div id="message" class="message"></div>
+
+  <div class="loading-bar">
+    <div class="progress"></div>
+  </div>
+
+
+  <script>
+    const paymentOptionRadios = document.querySelectorAll('input[name="payment-option"]');
+    const paymentForm = document.querySelector('.payment-form');
+    const qrCodeImg = document.getElementById('qr-code-img');
+    const message = document.getElementById('message');
+    const loadingBar = document.querySelector('.loading-bar');
+    const progressBar = document.querySelector('.progress');
+    const paymentOption = document.querySelector('.payment-option')
+
+    paymentOptionRadios.forEach(function(radio) {
+      radio.addEventListener('change', function() {
+        if (radio.value === 'credit-debit') {
+          paymentForm.classList.add('show');
+          qrCodeImg.style.display = 'none';
+        } else {
+          paymentForm.classList.remove('show');
+          qrCodeImg.style.display = 'block';
+        }
+      });
+    });
+
+    paymentForm.addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      paymentForm.style.display = 'none';
+      paymentOption.style.display = 'none'
+      loadingBar.style.display = 'block';
+      progressBar.style.width = '0%';
+      message.innerText = 'Imprimindo';
+      message.style.display = 'block';
+
+      simulatePaymentProcessing();
+    });
+
+    function simulatePaymentProcessing() {
+      let progress = 0;
+      const interval = setInterval(function() {
+        progress += 20;
+        progressBar.style.width = progress + '%';
+        
+
+        if (progress >= 100) {
+          clearInterval(interval);
+          showThankYouMessage();
+        }
+      }, 1000);
+    }
+
+    function showThankYouMessage() {
+      loadingBar.style.display = 'none';
+      message.innerText = 'Obrigado! Bom filme!';
+      message.style.display = 'block';
+
+      setTimeout(function() {
+        window.location.href = '/index.html';
+      }, 5000);
+    }
+
+    
+    
+    
+  </script>
+</body>
+</html>
